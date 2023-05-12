@@ -3,7 +3,7 @@ import{Length,IsInt,validate, Contains, MinLength, MaxLength, IsDate, IsEmail, I
 export class AdminForm {   
    
 
-    @IsNotEmpty()
+    
      name: string;
     
     @IsEmail() 

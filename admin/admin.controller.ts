@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Query ,Post ,Body ,Put,Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Session, UseGuards, Patch} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query ,Post ,Body ,Put,Delete, UsePipes, ValidationPipe, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, Session, UseGuards, Patch, Res} from '@nestjs/common';
 import { AdminService} from './adminservice.service';
 import { AdminForm } from "./adminlogin.dto";
 import { SellerService } from '../sellerfile/seller.service';
@@ -11,14 +11,22 @@ import { diskStorage } from 'multer';
 import { SessionGuard } from './session.guard';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import { SellerEntity } from '../sellerfile/seller.entity';
+import { CustomerService } from '../customerfile/customer.service';
+import { CustomerForm } from '../customerfile/customer.dto';
 
 @Controller()
 export class AdminController{
-      constructor(private readonly adminService: AdminService ,private sellerService: SellerService,private moderatorService:ModeratorService) {}
+      constructor(private readonly adminService: AdminService ,private sellerService: SellerService,private moderatorService:ModeratorService,private customerService:CustomerService) {}
      
 
 
     //seller area
+    @Get('/indexi')
+    getAdmin(): any {
+      return this.sellerService.getIndex();
+    }
+
+
 
      @Get("/sinfo/:id")
      getseller(@Param('id', ParseIntPipe) id: number):any{
@@ -32,13 +40,14 @@ export class AdminController{
      getAdminBysellerID(@Param('id', ParseIntPipe) id: number): any {
        return this.sellerService.getAdminBysellerID(id);
      }
+
      @Get("/seler")
      getsel():any{
        return this.sellerService.getsel();
      }
 
      @Post("/sellerinfo")
-     @UsePipes(new ValidationPipe())
+    // @UsePipes(new ValidationPipe())
      insertseller(@Body() mydto1:SellerForm): any {
       //mydto1.adminname = session.username;
        return this.sellerService.insertseller(mydto1);
@@ -81,7 +90,7 @@ export class AdminController{
          return this.adminService.insertUser(mydto);
        }*/
        @Post('/signupadmin')
-       @UsePipes(new ValidationPipe())
+       //@UsePipes(new ValidationPipe())
        @UseInterceptors(FileInterceptor('myfile',
         {storage:diskStorage({
             destination: './uploads',
@@ -104,20 +113,37 @@ export class AdminController{
          console.log(file)
        }
 
-       @Get('/signin')
+       /*@Post('/signin')
          async signin(@Session() session,  @Body("email") email:string,
          @Body("password") password:string)
          
          {
-          if(await this.adminService.signin(email, password) == 1){
+          if(await this.adminService.signin(email, password) == true){
               session.email = email;
-              session.role = "admin";
-              return {message:"Successfully logged"};
+             // session.role = "admin";
+             // return {message:"Successfully logged"};
+              return (session.email);
           }
           else{
               return {message:"Invalid username or password"};
           }
-      }
+      }*/
+
+      @Post('/signin')
+      @UsePipes(new ValidationPipe())
+    async signin(@Session() session, @Body() mydto:AdminForm)
+      {
+        const res = await (this.adminService.signin(mydto));
+    if(res==true)
+    {
+      session.email = mydto.email;
+      //return (session.email);
+    }
+    else
+    {
+      throw new UnauthorizedException({ message: "invalid credentials" });
+    }
+    }
        
 
       @Get('/signout')
@@ -140,7 +166,10 @@ return this.adminService.sendEmail(mydata);
 }
        
 
-
+@Get('/index')
+getAdmini(): any {
+  return this.adminService.getIndex();
+}
 
 
        @Get('/findadmin/:id')
@@ -211,6 +240,58 @@ deletemoderatorbyid(
    @Param("id") id:number
     ): any {
   return this.moderatorService.deletemoderatorbyid(id);
+    }
+
+
+
+
+
+    //customer area
+    @Get("/coinfo/:id")
+  getcustomer(@Param('id', ParseIntPipe) id: number):any{
+    return this.customerService.getcustomer(id);
+  }
+  @Get("/customer")
+  getcust():any{
+    return this.customerService.getcust();
+  }
+
+  @Post("/customerinfo")
+  @UsePipes(new ValidationPipe())
+  insertcustomer(@Body() mydto1:CustomerForm): any {
+    return this.customerService.insertcustomer(mydto1);
+  } 
+  @Put("/updatecustomer/")
+  //@UsePipes(new ValidationPipe())
+  updatecustomer( 
+    @Body("id") id:number, 
+    @Body("sname") sname:string,
+    @Body("email") email:number,
+    @Body("phn") phn:number,
+    @Body("gender") gender:string,
+    @Body("religion") religion:string,
+    @Body("address") address:string,
+    ): any {
+  return this.customerService.updatecustomer(id, sname,email,phn,gender,religion,address);
+  }
+  @Put('/updatecustomer/:id')
+@UsePipes(new ValidationPipe())
+updatecustomerbyid(
+ @Body() mydto: CustomerForm,
+ @Param('id', ParseIntPipe) id: number,
+): any {
+ return this.customerService.updatecustomerbyid(mydto, id);
+}
+  @Delete("/deletecustomer/:id")
+deletecustomerbyid( 
+   @Param("id") id:number
+    ): any {
+  return this.customerService.deletecustomerbyid(id);
+    }
+
+    @Get('/getimage/:name')
+    getImages(@Param('name') name, @Res() res) {
+      res.sendFile(name,{ root: './uploads' })
     }
     
 }

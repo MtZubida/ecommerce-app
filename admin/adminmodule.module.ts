@@ -8,6 +8,8 @@ import { SellerEntity } from '../sellerfile/seller.entity';
 import { SellerService } from '../sellerfile/seller.service';
 import { ModeratorService } from '../moderatorfile/moderator.service';
 import { ModeratorEntity } from '../moderatorfile/moderator.entity';
+import { CustomerService } from '../customerfile/customer.service';
+import { CustomerEntity } from '../customerfile/customer.entity';
 import { MailerModule } from "@nestjs-modules/mailer";
 @Module({
   //imports: [AdminModule],
@@ -18,13 +20,13 @@ import { MailerModule } from "@nestjs-modules/mailer";
                ignoreTLS: true,
                secure: true,
                auth: {
-                   user: '',
-                   pass: ''
+                   user: 'zubaida.gttc@gmail.com',
+                   pass: 'rljvkkbnbbizurof'
                },
               }
   }),
-  TypeOrmModule.forFeature([AdminEntity,SellerEntity,ModeratorEntity])],
+  TypeOrmModule.forFeature([AdminEntity,SellerEntity,ModeratorEntity,CustomerEntity])],
   controllers: [AdminController],
-  providers: [AdminService,SellerService,ModeratorService],
+  providers: [AdminService,SellerService,ModeratorService,CustomerService],
 })
 export class AdminModule {}

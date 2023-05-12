@@ -11,11 +11,11 @@ export class AdminService {
    
    
     constructor(
-        @InjectRepository(AdminEntity)
-        private adminRepo: Repository<AdminEntity>,
-        private mailerService: MailerService
+                   @InjectRepository(AdminEntity)
+                   private adminRepo: Repository<AdminEntity>,
+                   private mailerService: MailerService
 
-      ) {}
+                ) {}
 
       /*insertUser(mydto:AdminForm):any {
         const adminaccount = new AdminEntity()
@@ -26,35 +26,60 @@ export class AdminService {
        return this.adminRepo.save(adminaccount);
           }*/
 
+          getIndex():any { 
+                              return this.adminRepo.find();
+        
+                         }
+
           async signup(mydto) {
-            const existingAdmin = await this.adminRepo.findOneBy({ name: mydto.name });
-            if(existingAdmin){
-                return "Username already exists, please choose a different username";
-            }
-            else{
-           const salt = await bcrypt.genSalt();
-            const hassedpassed = await bcrypt.hash(mydto.password, salt);
-            mydto.password= hassedpassed;
-            return this.adminRepo.save(mydto);}
-            }
+                                         //const existingAdmin = await this.adminRepo.findOneBy({ name: mydto.name });
+                                        // if(existingAdmin){
+                                         //return "Username already exists, please choose a different username";
+                                         // }
+                                       // else{
+                                            const salt = await bcrypt.genSalt();
+                                            const hassedpassed = await bcrypt.hash(mydto.password, salt);
+                                             mydto.password= hassedpassed;
+                                               return this.adminRepo.save(mydto);
+                                                 // }
+                                 }
 
 
-            async signin(email, password){
-            //console.log(mydto.email);
-            const mydata= await this.adminRepo.findOneBy({email: email});
-            if(mydata){
-                const isMatch=await bcrypt.compare(password, mydata.password);
-            if(isMatch) {
-            return 1;
-            }
-            else {
-                return 0;
-            }
-            }
-            else
-            return 0;
+            async signin(mydto){
+                                              //console.log(mydto.email);
+                                               const mydata= await this.adminRepo.findOneBy({email: mydto.email});
+                                               if(mydata){
+                                                                const isMatch=await bcrypt.compare(mydto.password, mydata.password);
+                                                                       if(isMatch) {
+                                                                                       return true;
+                                                                                    }
+                                                                         else {
+                                                                                      return false;
+                                                                                }
+                                                        }
+                                                          else
+                                                              return false;
             
-            }
+                                         }
+              
+                                        /* async signin(mydto){
+   
+                                            if (mydto.email != null && mydto.password != null) {
+                                                const mydata = await this.adminRepo.findOneBy({ email: mydto.email });
+                                                const isMatch = await bcrypt.compare(mydto.password, mydata.password);
+                                                if (isMatch) {
+                                                    return true;
+                                                }
+                                                else {
+                                                    return false;
+                                                }
+                                            } else {
+                                                return false;
+                                            }
+                                           
+                                        } */            
+           
+                                         
 
             async sendEmail(mydata){
                 return   await this.mailerService.sendMail({
@@ -93,18 +118,12 @@ export class AdminService {
         return this.adminRepo.find({ 
                 where: {id:id},
             relations: {
-                sellers: true,
+                //sellers: true,
             },
          });
         }
 
-
-
-
-
-    
-    
-    
+      
     }
 
 

@@ -22,8 +22,8 @@ export class AdminEntity{
   @Column()
  filename: string;
   
-  @OneToMany(() => SellerEntity, (seller) => seller.admin)
- sellers: SellerEntity[]
+ // @OneToMany(() => SellerEntity, (seller) => seller.admin)
+ //sellers: SellerEntity[]
 
 
 }
