@@ -4,7 +4,7 @@ export class SellerForm {
    
 
     @Length(2,10)
-    sname:string;
+    name:string;
     @IsEmail()
     email:string;
    
@@ -14,7 +14,7 @@ export class SellerForm {
     @MinLength(5,{message:'address is too short',})
     @MaxLength(20,{message:'address is long',})
     address:string;
-    adminname:string;
+    //adminname:string;
 
 
 }

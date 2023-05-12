@@ -8,7 +8,7 @@ export class SellerEntity{
     id: number;
   
     @Column()
-    sname: string;
+    name: string;
   
     @Column()
     email: string;
@@ -21,10 +21,10 @@ export class SellerEntity{
     religion: string;
     @Column()
     address: string;
-    @Column()
-    adminname:string;
+   // @Column()
+    //adminname:string;
 
- @ManyToOne(() =>AdminEntity, (admin) => admin.sellers)
-    admin: AdminEntity
+ //@ManyToOne(() =>AdminEntity, (admin) => admin.sellers)
+    //admin: AdminEntity
 
 }

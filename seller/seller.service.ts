@@ -30,23 +30,23 @@ export class SellerService {
      
     }*/
 
-   async insertseller(mydto:SellerForm):Promise<any>  {
-        const exAdmin = await this.adminRepo.findOneBy({ name: mydto.adminname });
-        if(exAdmin){
-            const reportEnty = new SellerEntity();
-            reportEnty.admin = exAdmin;
+    async insertseller(mydto:SellerForm)  {
+        //const exAdmin = await this.adminRepo.findOneBy({ name: mydto.adminname });
+       //if(exAdmin){
+            /*const reportEnty = new SellerEntity();
+            //reportEnty.admin = exAdmin;
             reportEnty.sname = mydto.sname;
             reportEnty.email = mydto.email;
             reportEnty.phn = mydto.phn;
             reportEnty.gender = mydto.gender;
             reportEnty.religion = mydto.religion;
-            reportEnty.address=mydto.address,
-            reportEnty.adminname=mydto.adminname
-            return this.sellerRepo.save(reportEnty);
-    }
-    else{
-        return "Only admin can create coupon. Login as admin";
-    }
+            reportEnty.address=mydto.address*/
+            //reportEnty.adminname=mydto.adminname
+            return this.sellerRepo.save(mydto);
+    //}
+   // else{
+      //  return "Only admin can create coupon. Login as admin";
+    //}
 
 }
 
@@ -55,7 +55,7 @@ export class SellerService {
         return this.sellerRepo.find({ 
                 where: {id:id},
             relations: {
-                admin: true,
+              //  admin: true,
             },
          });
     }
@@ -66,8 +66,8 @@ export class SellerService {
 
 
 
-    updateseller(id,sname,email,phn,gender,religion,address):any {
-        return this.sellerRepo.update(id,{sname:sname,email:email,phn:phn,gender:gender,religion:religion,address:address});
+    updateseller(id,name,email,phn,gender,religion,address):any {
+        return this.sellerRepo.update(id,{name:name,email:email,phn:phn,gender:gender,religion:religion,address:address});
 
         
         //return "seller id: "  + id+" and selller name is " + sname+"email is"+email+"phone number is"+phn+"address is"+address;
@@ -85,7 +85,10 @@ export class SellerService {
     }
     
     
+    getIndex():any { 
+        return this.sellerRepo.find();
     
+    }
     
     
     
